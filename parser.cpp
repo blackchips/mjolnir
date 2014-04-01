@@ -35,7 +35,7 @@ enum Token
 class FileIt final
 {
   File		file;
-  PTR_SIZE	pos;
+  size_t	pos;
 
  public:
   explicit inline FileIt(const File &file_) :
@@ -44,9 +44,9 @@ class FileIt final
   {
     return this->pos == this->file.length();
   }
-  i8	peek_and_advance(void)
+  char	peek_and_advance(void)
   {
-    const i8	c(this->peek());
+    const char	c(this->peek());
 
     this->advance();
     return c;
@@ -56,7 +56,7 @@ class FileIt final
     mj_assert(!this->eof_p());
     this->pos++;
   }
-  i8	peek(void) const
+  char	peek(void) const
   {
     return this->file.peek(this->pos);
   }
@@ -78,10 +78,10 @@ public:
 private:
   bool			eof_p(void) const;
   bool			parse_scope(Scope &ast);
-  i8			peek_and_advance_char(void);
-  Token			parse_word(const i8 c);
+  char			peek_and_advance_char(void);
+  Token			parse_word(const char c);
   void			advance_char(void);
-  i8			peek_char(void) const;
+  char			peek_char(void) const;
   Token			string_to_token(void) const;
 
 
@@ -109,7 +109,7 @@ private:
   std::string		identifier;
   Token			token;
   Option		&options;
-  i32			scope_level;
+  int			scope_level;
   Scope			*scope_;
 };
 
@@ -123,7 +123,7 @@ void	Parser::advance_char(void)
   this->it.advance();
 }
 
-i8	Parser::peek_char(void) const
+char	Parser::peek_char(void) const
 {
   return this->it.peek();
 }
@@ -135,7 +135,7 @@ bool	Parser::eof_p(void) const
 }
 
 
-i8	Parser::peek_and_advance_char(void)
+char	Parser::peek_and_advance_char(void)
 {
   return this->it.peek_and_advance();
 }
@@ -143,7 +143,7 @@ i8	Parser::peek_and_advance_char(void)
 Token	Parser::string_to_token(void) const
 {
   const struct {
-    const i8		*str;
+    const char		*str;
     const Token		tok;
   }	map_keyword_token [] =
 	  {
@@ -159,12 +159,12 @@ Token	Parser::string_to_token(void) const
   return Token::WORD;
 }
 
-Token	Parser::parse_word(const i8 c)
+Token	Parser::parse_word(const char c)
 {
   this->identifier.push_back(c);
   while (!this->eof_p())
     {
-      const i8	c2(this->peek_char());
+      const char	c2(this->peek_char());
 
       if ((c2 >= 'a' && c2 <= 'z') || (c2 >= 'A' && c2 <= 'Z') || c2 == '_' || (c2 >= '0' && c2 <= '9'))
 	{
@@ -224,7 +224,7 @@ Token	Parser::advance_token_2(void)
     {
       if (this->eof_p())
 	return Token::EOF_;
-      const i8 c(this->peek_and_advance_char());
+      const char c(this->peek_and_advance_char());
 
       switch (c)
 	{
@@ -255,7 +255,7 @@ Token	Parser::advance_token_2(void)
 
 	case '+':
 	  {
-	    const i8	n(this->peek_char());
+	    const char	n(this->peek_char());
 
 	    if (n == '+')
 	      mj_unreachable();
@@ -266,7 +266,7 @@ Token	Parser::advance_token_2(void)
 	  }
 	case '-':
 	  {
-	    const i8	n(this->peek_char());
+	    const char	n(this->peek_char());
 
 	    if (n == '-')
 	      mj_unreachable();
@@ -280,7 +280,7 @@ Token	Parser::advance_token_2(void)
 
 	case '*':
 	  {
-	    const i8	n(this->peek_char());
+	    const char	n(this->peek_char());
 
 	    if (n == '=')
 	      mj_unreachable();
@@ -290,7 +290,7 @@ Token	Parser::advance_token_2(void)
 
 	case '/':
 	  {
-	    const i8	n(this->peek_char());
+	    const char	n(this->peek_char());
 
 	    if (n == '=')
 	      mj_unreachable();

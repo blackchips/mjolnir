@@ -9,9 +9,9 @@
 static void	dump_type(std::string &stream, const Variable *var);
 static void	dump_variable(std::string &stream, const Variable *var, bool tab_p);
 static void	dump_function_prototype(std::string &stream, const Function_prototype &proto);
-static void	dump_scope(std::string &stream, const Scope *scope, ui32 level);
+static void	dump_scope(std::string &stream, const Scope *scope, unsigned int level);
 static void	dump_expression(std::string &stream, const Expression &expr);
-static const i8	*get_string_for_operator(Expression::Kind ope);
+static const char	*get_string_for_operator(Expression::Kind ope);
 
 
 static void	dump_type(std::string &stream, const Variable *var)
@@ -46,7 +46,7 @@ static void	dump_function_prototype(std::string &stream, const Function_prototyp
       stream.append("(");
       if (!proto.params.empty())
 	{
-	  for (ui32 i = 0; i < proto.params.size() - 1; i++)
+	  for (unsigned int i = 0; i < proto.params.size() - 1; i++)
 	    {
 	      dump_variable(stream, &proto.params[i], false /*tab_p*/);
 	      stream.append(", ");
@@ -58,7 +58,7 @@ static void	dump_function_prototype(std::string &stream, const Function_prototyp
     }
 }
 
-static const i8	*get_string_for_operator(Expression::Kind ope)
+static const char	*get_string_for_operator(Expression::Kind ope)
 {
   if (ope == Expression::Kind::ADDITION)
     return " + ";
@@ -96,7 +96,7 @@ static void	dump_expression(std::string &stream, const Expression &expr)
 }
 
 
-static void	dump_scope(std::string &stream, const Scope *scope, ui32 level)
+static void	dump_scope(std::string &stream, const Scope *scope, unsigned int level)
 {
   dump_function_prototype(stream, scope->proto);
   if (level == 1)

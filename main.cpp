@@ -19,11 +19,11 @@ enum Expected_result
 
 
 
-static	ui64	nb_test = 0;
-static	ui64	failed_test = 0;
+static	unsigned long long	nb_test = 0;
+static	unsigned long long	failed_test = 0;
 
 
-static void	run_test(Option &option, const i8 *file, const PTR_SIZE len_file, const i8 *expected, const Expected_result fail_p);
+static void	run_test(Option &option, const char *file, const size_t len_file, const char *expected, const Expected_result fail_p);
 static void	do_tests(void);
 
 
@@ -40,7 +40,7 @@ static void	test_parse_comments(void);
 
 
 
-static void	run_test(Option &option, const i8 *file, const PTR_SIZE len_file, const i8 *expected, const Expected_result fail_p)
+static void	run_test(Option &option, const char *file, const size_t len_file, const char *expected, const Expected_result fail_p)
 {
   File	to_test("<test>", file, len_file);
   Scope	*res = pass_manager(to_test, option);
@@ -101,10 +101,10 @@ static void	test_parse_variable_declaration(void)
   TEST("int y", "expected ';' or '('\n", FAIL);
 
 
-  TEST("int;", "i32;\n", SUCCESS);
-  TEST("int y;", "i32	y;\n", SUCCESS);
-  TEST("int;int;", "i32;\ni32;\n", SUCCESS);
-  TEST("int;void;", "i32;\nvoid;\n", SUCCESS);
+  TEST("int;", "int;\n", SUCCESS);
+  TEST("int y;", "int	y;\n", SUCCESS);
+  TEST("int;int;", "int;\nint;\n", SUCCESS);
+  TEST("int;void;", "int;\nvoid;\n", SUCCESS);
 }
 
 static void	test_parse_function_prototypes(void)
@@ -118,10 +118,10 @@ static void	test_parse_function_prototypes(void)
   TEST("int f(void int);", "expected identifier or ','\n", FAIL);
   TEST("int f(,);", "expected params or ')'\n", FAIL);
 
-  TEST("int f();",		"i32	f();\n", SUCCESS);
-  TEST("int f(void);",		"i32	f(void);\n", SUCCESS);
-  TEST("int f(void, int);",	"i32	f(void, i32);\n", SUCCESS);
-  TEST("int f(int a, int b, int c);", "i32	f(i32 a, i32 b, i32 c);\n", SUCCESS);
+  TEST("int f();",		"int	f();\n", SUCCESS);
+  TEST("int f(void);",		"int	f(void);\n", SUCCESS);
+  TEST("int f(void, int);",	"int	f(void, int);\n", SUCCESS);
+  TEST("int f(int a, int b, int c);", "int	f(int a, int b, int c);\n", SUCCESS);
 }
 
 static void	test_parse_empty_function(void)
@@ -129,9 +129,9 @@ static void	test_parse_empty_function(void)
   Option	opt;
 
   opt.dump_parse_p = true;
-  TEST("int f(){}", "i32	f()\n{\n}\n", SUCCESS);
-  TEST("int f(int){}", "i32	f(i32)\n{\n}\n", SUCCESS);
-  TEST("int f(int i){}", "i32	f(i32 i)\n{\n}\n", SUCCESS);
+  TEST("int f(){}", "int	f()\n{\n}\n", SUCCESS);
+  TEST("int f(int){}", "int	f(int)\n{\n}\n", SUCCESS);
+  TEST("int f(int i){}", "int	f(int i)\n{\n}\n", SUCCESS);
 
 
   TEST("int f()}", "expected ';' or '{'\n", FAIL);
@@ -150,9 +150,9 @@ static void	test_parse_empty_scopes(void)
   TEST("int f(){{}{}{}{}{}{}{}", "missing '}'\n", FAIL);
   TEST("int f(){{}{}{}{}{}{}}}", "too many '}'\n", FAIL);
 
-  TEST("int f(){{}}", "i32	f()\n{\n{\n}\n}\n", SUCCESS);
-  TEST("int f(){{}{}}", "i32	f()\n{\n{\n}\n{\n}\n}\n", SUCCESS);
-  TEST("int f(){{{}}}", "i32	f()\n{\n{\n{\n}\n}\n}\n", SUCCESS);
+  TEST("int f(){{}}", "int	f()\n{\n{\n}\n}\n", SUCCESS);
+  TEST("int f(){{}{}}", "int	f()\n{\n{\n}\n{\n}\n}\n", SUCCESS);
+  TEST("int f(){{{}}}", "int	f()\n{\n{\n{\n}\n}\n}\n", SUCCESS);
 }
 
 static void	test_parse_var_in_scopes(void)
@@ -160,7 +160,7 @@ static void	test_parse_var_in_scopes(void)
   Option	opt;
 
   opt.dump_parse_p = true;
-  TEST("int f(){int i;{int j;}}", "i32	f()\n{\ni32	i;\n{\ni32	j;\n}\n}\n", SUCCESS);
+  TEST("int f(){int i;{int j;}}", "int	f()\n{\nint	i;\n{\nint	j;\n}\n}\n", SUCCESS);
 }
 
 
@@ -173,10 +173,10 @@ static void	test_parse_additions(void)
   TEST("+", "expected declaration or identifier\n", FAIL);
   TEST("int i; i +", "expected identifier or constant\n", FAIL);
 
-  TEST("int i; i;", "i32	i;\n\ni;\n", SUCCESS);
-  TEST("int i; int j; i + j;", "i32	i;\ni32	j;\ni32	.0;\n\n.0 = i + j;\n", SUCCESS);
-  TEST("int i; int j; int k; i + j + k;", "i32	i;\ni32	j;\ni32	k;\ni32	.0;\ni32	.1;\n\n.0 = i + j;\n.1 = .0 + k;\n", SUCCESS);
-  TEST("int i; int j; int k; int l;i + j + k +l;", "i32	i;\ni32	j;\ni32	k;\ni32	l;\ni32	.0;\ni32	.1;\ni32	.2;\n\n.0 = i + j;\n.1 = .0 + k;\n.2 = .1 + l;\n", SUCCESS);
+  TEST("int i; i;", "int	i;\n\ni;\n", SUCCESS);
+  TEST("int i; int j; i + j;", "int	i;\nint	j;\nint	.0;\n\n.0 = i + j;\n", SUCCESS);
+  TEST("int i; int j; int k; i + j + k;", "int	i;\nint	j;\nint	k;\nint	.0;\nint	.1;\n\n.0 = i + j;\n.1 = .0 + k;\n", SUCCESS);
+  TEST("int i; int j; int k; int l;i + j + k +l;", "int	i;\nint	j;\nint	k;\nint	l;\nint	.0;\nint	.1;\nint	.2;\n\n.0 = i + j;\n.1 = .0 + k;\n.2 = .1 + l;\n", SUCCESS);
 }
 
 static void	test_parse_soustractions(void)
@@ -189,8 +189,8 @@ static void	test_parse_soustractions(void)
   TEST("int i; i", "expected operator or ';'\n", FAIL);
   TEST("int i; i -", "expected identifier or constant\n", FAIL);
 
-  TEST("int i; int j; i - j;", "i32	i;\ni32	j;\ni32	.0;\n\n.0 = i - j;\n", SUCCESS);
-  TEST("int i; int j; int k; int l;i - j - k - l;", "i32	i;\ni32	j;\ni32	k;\ni32	l;\ni32	.0;\ni32	.1;\ni32	.2;\n\n.0 = i - j;\n.1 = .0 - k;\n.2 = .1 - l;\n", SUCCESS);
+  TEST("int i; int j; i - j;", "int	i;\nint	j;\nint	.0;\n\n.0 = i - j;\n", SUCCESS);
+  TEST("int i; int j; int k; int l;i - j - k - l;", "int	i;\nint	j;\nint	k;\nint	l;\nint	.0;\nint	.1;\nint	.2;\n\n.0 = i - j;\n.1 = .0 - k;\n.2 = .1 - l;\n", SUCCESS);
 }
 
 static void	test_parse_multiplications(void)
@@ -202,8 +202,8 @@ static void	test_parse_multiplications(void)
   TEST("*", "expected declaration or identifier\n", FAIL);
   TEST("int i; i *", "expected identifier or constant\n", FAIL);
 
-  TEST("int i; int j; i * j;", "i32	i;\ni32	j;\ni32	.0;\n\n.0 = i * j;\n", SUCCESS);
-  TEST("int i; int j; int k; int l;i * j * k * l;", "i32	i;\ni32	j;\ni32	k;\ni32	l;\ni32	.0;\ni32	.1;\ni32	.2;\n\n.0 = i * j;\n.1 = .0 * k;\n.2 = .1 * l;\n", SUCCESS);
+  TEST("int i; int j; i * j;", "int	i;\nint	j;\nint	.0;\n\n.0 = i * j;\n", SUCCESS);
+  TEST("int i; int j; int k; int l;i * j * k * l;", "int	i;\nint	j;\nint	k;\nint	l;\nint	.0;\nint	.1;\nint	.2;\n\n.0 = i * j;\n.1 = .0 * k;\n.2 = .1 * l;\n", SUCCESS);
 }
 
 static void	test_parse_divisions(void)
@@ -215,8 +215,8 @@ static void	test_parse_divisions(void)
   TEST("/", "expected declaration or identifier\n", FAIL);
   TEST("int i; i /", "expected identifier or constant\n", FAIL);
 
-  TEST("int i; int j; i / j;", "i32	i;\ni32	j;\ni32	.0;\n\n.0 = i / j;\n", SUCCESS);
-  TEST("int i; int j; int k; int l;i / j / k / l;", "i32	i;\ni32	j;\ni32	k;\ni32	l;\ni32	.0;\ni32	.1;\ni32	.2;\n\n.0 = i / j;\n.1 = .0 / k;\n.2 = .1 / l;\n", SUCCESS);
+  TEST("int i; int j; i / j;", "int	i;\nint	j;\nint	.0;\n\n.0 = i / j;\n", SUCCESS);
+  TEST("int i; int j; int k; int l;i / j / k / l;", "int	i;\nint	j;\nint	k;\nint	l;\nint	.0;\nint	.1;\nint	.2;\n\n.0 = i / j;\n.1 = .0 / k;\n.2 = .1 / l;\n", SUCCESS);
 }
 
 static void	test_parse_comments(void)
@@ -249,15 +249,15 @@ static void	test_parse_operator_priority(void)
   Option	opt;
 
   opt.dump_parse_p = true;
-  TEST("int i; int j; int k; i * j + k;", "i32	i;\ni32	j;\ni32	k;\ni32	.0;\ni32	.1;\n\n.0 = i * j;\n.1 = .0 + k;\n", SUCCESS);
-  TEST("int i; int j; int k; i + j * k;", "i32	i;\ni32	j;\ni32	k;\ni32	.0;\ni32	.1;\n\n.0 = j * k;\n.1 = i + .0;\n", SUCCESS);
+  TEST("int i; int j; int k; i * j + k;", "int	i;\nint	j;\nint	k;\nint	.0;\nint	.1;\n\n.0 = i * j;\n.1 = .0 + k;\n", SUCCESS);
+  TEST("int i; int j; int k; i + j * k;", "int	i;\nint	j;\nint	k;\nint	.0;\nint	.1;\n\n.0 = j * k;\n.1 = i + .0;\n", SUCCESS);
 
-  TEST("int i; int j; int k; i / j + k;", "i32	i;\ni32	j;\ni32	k;\ni32	.0;\ni32	.1;\n\n.0 = i / j;\n.1 = .0 + k;\n", SUCCESS);
-  TEST("int i; int j; int k; i + j / k;", "i32	i;\ni32	j;\ni32	k;\ni32	.0;\ni32	.1;\n\n.0 = j / k;\n.1 = i + .0;\n", SUCCESS);
+  TEST("int i; int j; int k; i / j + k;", "int	i;\nint	j;\nint	k;\nint	.0;\nint	.1;\n\n.0 = i / j;\n.1 = .0 + k;\n", SUCCESS);
+  TEST("int i; int j; int k; i + j / k;", "int	i;\nint	j;\nint	k;\nint	.0;\nint	.1;\n\n.0 = j / k;\n.1 = i + .0;\n", SUCCESS);
 
-  TEST("int i; int j; int k; i * j / k;", "i32	i;\ni32	j;\ni32	k;\ni32	.0;\ni32	.1;\n\n.0 = i * j;\n.1 = .0 / k;\n", SUCCESS);
+  TEST("int i; int j; int k; i * j / k;", "int	i;\nint	j;\nint	k;\nint	.0;\nint	.1;\n\n.0 = i * j;\n.1 = .0 / k;\n", SUCCESS);
 
-  TEST("int i; int j; int k; int l;i * j + k / l;", "i32	i;\ni32	j;\ni32	k;\ni32	l;\ni32	.0;\ni32	.1;\ni32	.2;\n\n.0 = i * j;\n.1 = k / l;\n.2 = .0 + .1;\n", SUCCESS);
+  TEST("int i; int j; int k; int l;i * j + k / l;", "int	i;\nint	j;\nint	k;\nint	l;\nint	.0;\nint	.1;\nint	.2;\n\n.0 = i * j;\n.1 = k / l;\n.2 = .0 + .1;\n", SUCCESS);
 }
 
 static void	do_tests(void)
@@ -276,7 +276,7 @@ static void	do_tests(void)
   test_parse_operator_priority();
 }
 
-i32	main(void)
+int	main(void)
 {
   do_tests();
   __builtin_printf("%llu tests\n", nb_test);

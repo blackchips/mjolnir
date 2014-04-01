@@ -12,39 +12,17 @@
 #  endif // NULL
 
 
-typedef char			i8;
-typedef unsigned char		ui8;
-typedef short			i16;
-typedef unsigned short		ui16;
-typedef int			i32;
-typedef unsigned int		ui32;
-typedef long long int		u64;
-typedef unsigned long long	ui64;
-
-typedef float			f32;
-typedef double			f64;
+#include <stddef.h>
 
 
-typedef	unsigned long long	PTR_SIZE;
-typedef	unsigned long long	PTR_DIFF;
 
-#  pragma GCC poison signed
-#  pragma GCC poison unsigned
-#  pragma GCC poison char
-#  pragma GCC poison short
-#  pragma GCC poison int
-#  pragma GCC poison long
-
-#  pragma GCC poison float
-#  pragma GCC poison double
-
-static inline void	mj_unreachable_fun(const i8 *f) NORETURN;
-static inline void	mj_assert_fun(const bool cond, const i8 *fun_name);
+static inline void	mj_unreachable_fun(const char *f) NORETURN;
+static inline void	mj_assert_fun(const bool cond, const char *fun_name);
 
 #  define	mj_assert(expr) mj_assert_fun(expr, __FUNCTION__)
 
 
-static inline void	mj_assert_fun(const bool cond, const i8 *fun_name)
+static inline void	mj_assert_fun(const bool cond, const char *fun_name)
 {
   if (cond)
     return ;
@@ -52,7 +30,7 @@ static inline void	mj_assert_fun(const bool cond, const i8 *fun_name)
   ABORT();
 }
 
-static inline void	mj_unreachable_fun(const i8 *fun_name)
+static inline void	mj_unreachable_fun(const char *fun_name)
 {
   __builtin_printf("unreachable path %s: %s %d\n", __FILE__, fun_name, __LINE__);
   ABORT();
@@ -86,7 +64,7 @@ public:
     this->counter = 0;
   }
 private:
-  ui64		counter;
+  unsigned long long		counter;
 };
 
 inline TempId	&temp_id_creator(void)

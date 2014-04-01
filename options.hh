@@ -19,7 +19,7 @@ struct Option
   std::string	dump_stream;
   bool		parse_p;
   bool		dump_parse_p;
-  ui64		: 16;
+  unsigned long long		: 16;
   C_dialect	c_dialect;
 
 };
