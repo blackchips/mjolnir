@@ -18,7 +18,8 @@ public:
     options_(options), scope_level_(0), scope_(new Scope()),
     lexer_(file, options)
   { }
-
+  Parser(void) = delete;
+  void	operator=(const Parser &) = delete;
   Parser(const Parser &parser) = delete;
 public:
   Scope			*parse(void);

@@ -34,7 +34,7 @@ struct Variable final {
   explicit inline Variable(const Variable *other) :
     size(other->size), name(other->name)
     { }
-  inline Variable(const Variable &other) :
+  explicit inline Variable(const Variable &other) :
     size(other.size), name(other.name)
     { }
 
@@ -46,6 +46,9 @@ struct Variable final {
 
 
 struct Function_prototype final {
+  explicit Function_prototype(void) : return_type(), params()
+    { }
+
   Variable		return_type;
   std::vector<Variable>	params;
 };
@@ -80,6 +83,10 @@ struct Expression final {
 
 struct Scope final
 {
+  explicit Scope(void) : proto(), var(), function_prototypes(),
+    functions(), expr()
+    { }
+
   Function_prototype			proto;
   std::vector<Variable*>		var;
   std::vector<Function_prototype>	function_prototypes;
