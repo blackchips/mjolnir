@@ -9,7 +9,7 @@
 
 
 
-Scope	*pass_manager(const File &file, Option &options)
+Scope	*pass_manager(const File &file, Options &options)
 {
   Scope	*scope = nullptr;
 

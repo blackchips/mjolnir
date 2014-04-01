@@ -24,7 +24,7 @@ static	unsigned long long	nb_test = 0;
 static	unsigned long long	failed_test = 0;
 
 
-static void	run_test(Option &option, const char *file,
+static void	run_test(Options &option, const char *file,
 			 const size_t len_file, const char *expected,
 			 const Expected_result fail_p);
 static void	do_tests(void);
@@ -43,7 +43,7 @@ static void	test_parse_comments(void);
 
 
 
-static void	run_test(Option &option, const char *file,
+static void	run_test(Options &option, const char *file,
 			 const size_t len_file, const char *expected,
 			 const Expected_result fail_p)
 {
@@ -88,7 +88,7 @@ static void	run_test(Option &option, const char *file,
 
 static void	test_parse_empty(void)
 {
-  Option	opt;
+  Options	opt;
 
   opt.dump_parse_p = true;
   TEST("", "", SUCCESS);
@@ -99,7 +99,7 @@ static void	test_parse_empty(void)
 
 static void	test_parse_variable_declaration(void)
 {
-  Option	opt;
+  Options	opt;
 
   opt.dump_parse_p = true;
   TEST("int", "expected identifier or '('\n", FAIL);
@@ -116,7 +116,7 @@ static void	test_parse_variable_declaration(void)
 
 static void	test_parse_function_prototypes(void)
 {
-  Option	opt;
+  Options	opt;
 
   opt.dump_parse_p = true;
   TEST("int f()", "expected ';' or '{'\n", FAIL);
@@ -134,7 +134,7 @@ static void	test_parse_function_prototypes(void)
 
 static void	test_parse_empty_function(void)
 {
-  Option	opt;
+  Options	opt;
 
   opt.dump_parse_p = true;
   TEST("int f(){}", "i32	f()\n{\n}\n", SUCCESS);
@@ -151,7 +151,7 @@ static void	test_parse_empty_function(void)
 
 static void	test_parse_empty_scopes(void)
 {
-  Option	opt;
+  Options	opt;
 
   opt.dump_parse_p = true;
   TEST("{}", "expected identifier\n", FAIL);
@@ -165,7 +165,7 @@ static void	test_parse_empty_scopes(void)
 
 static void	test_parse_var_in_scopes(void)
 {
-  Option	opt;
+  Options	opt;
 
   opt.dump_parse_p = true;
   TEST("int f(){int i;{int j;}}", "i32	f()\n"
@@ -175,7 +175,7 @@ static void	test_parse_var_in_scopes(void)
 
 static void	test_parse_additions(void)
 {
-  Option	opt;
+  Options	opt;
 
   opt.dump_parse_p = true;
 
@@ -194,7 +194,7 @@ static void	test_parse_additions(void)
 
 static void	test_parse_soustractions(void)
 {
-  Option	opt;
+  Options	opt;
 
   opt.dump_parse_p = true;
 
@@ -211,7 +211,7 @@ static void	test_parse_soustractions(void)
 
 static void	test_parse_multiplications(void)
 {
-  Option	opt;
+  Options	opt;
 
   opt.dump_parse_p = true;
 
@@ -227,7 +227,7 @@ static void	test_parse_multiplications(void)
 
 static void	test_parse_divisions(void)
 {
-  Option	opt;
+  Options	opt;
 
   opt.dump_parse_p = true;
 
@@ -243,7 +243,7 @@ static void	test_parse_divisions(void)
 
 static void	test_parse_comments(void)
 {
-  Option	opt;
+  Options	opt;
 
   opt.dump_parse_p = true;
   opt.c_dialect = C_dialect::C_89;
@@ -269,7 +269,7 @@ static void	test_parse_comments(void)
 
 static void	test_parse_operator_priority(void)
 {
-  Option	opt;
+  Options	opt;
 
   opt.dump_parse_p = true;
   TEST("int i; int j; int k; i * j + k;",

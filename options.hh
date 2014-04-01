@@ -12,9 +12,9 @@ enum C_dialect {
   C_99,
   };
 
-struct Option
+struct Options
 {
-  inline explicit Option(void) :
+  inline explicit Options(void) :
   error_stream(""), dump_stream(""), parse_p(true), dump_parse_p(false),
   c_dialect(C_99)
   { }

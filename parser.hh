@@ -1,4 +1,5 @@
-#pragma once
+#ifndef		PARSER_HH_
+# define	PARSER_HH_
 
 class File final
 {
@@ -87,4 +88,6 @@ struct Scope final
 };
 
 
-Scope	*parse(const File &file, Option &options);
+Scope	*parse(const File &file, Options &options);
+
+#endif		//!PARSER_HH_
