@@ -3,6 +3,7 @@
 
 #include "mjolnir.hh"
 #include "options.hh"
+#include "tree.hh"
 #include "parser.hh"
 #include "dumper.hh"
 #include "pass.hh"

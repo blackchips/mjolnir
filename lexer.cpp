@@ -4,6 +4,7 @@
 #include "mjolnir.hh"
 #include "options.hh"
 #include "message.hh"
+#include "tree.hh"
 #include "parser.hh"
 #include "lexer.hh"
 
