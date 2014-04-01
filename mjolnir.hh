@@ -6,6 +6,7 @@
 #  define NORETURN		__attribute__((noreturn))
 
 #  define ABORT()		__builtin_abort()
+#  define PRINTF(...)		__attribute__((format(printf, __VA_ARGS__)))
 
 #  ifdef NULL
 #   undef NULL
@@ -32,7 +33,8 @@ static inline void	mj_assert_fun(const bool cond, const char *fun_name)
 
 static inline void	mj_unreachable_fun(const char *fun_name)
 {
-  __builtin_printf("unreachable path %s: %s %d\n", __FILE__, fun_name, __LINE__);
+  __builtin_printf("unreachable path %s: %s %d\n",
+		   __FILE__, fun_name, __LINE__);
   ABORT();
 }
 

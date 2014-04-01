@@ -68,8 +68,10 @@ class Parser final
 {
 public:
   explicit inline Parser(Option &options_, const File &file_) :
-    it(file_), identifier(), token(Token::ERROR), options(options_), scope_level(0), scope_(new Scope())
-  {}
+    it(file_), identifier(), token(Token::ERROR), options(options_),
+    scope_level(0), scope_(new Scope())
+  { }
+
   Parser(const Parser &parser) = delete;
 public:
   Scope			*parse(void);
@@ -92,14 +94,16 @@ private:
 
   bool			parse_identifier(Variable &var);
   bool			parse_type(Variable &var);
-  bool			parse_function_prototype(const Variable &var, Function_prototype &fun_proto);
+  bool			parse_function_prototype(const Variable &var,
+						 Function_prototype &fun_proto);
   bool			parse_variable(Variable &var);
   bool			parse_expression(Scope &scope);
 
 
   static void		add_var_to_scope(Scope &scope, const Variable &var);
   bool			leave_scope_p(void);
-  bool			handle_operation(Scope &scope, std::array<std::string, 3> &name, std::array<Token, 2> &op);
+  bool			handle_operation(Scope &scope, std::array<std::string, 3> &name,
+					 std::array<Token, 2> &op);
   static bool		prioritary_operator_p(const Token &token);
   bool			skip_c_comment(void);
   bool			skip_cpp_comment(void);
@@ -159,6 +163,12 @@ Token	Parser::string_to_token(void) const
   return Token::WORD;
 }
 
+# define isnum(c) (c >= '0' && c <= '9')
+# define islower(c) (c >= 'a' && c <= 'z')
+# define isupper(c) (c >= 'A' && c <= 'Z')
+# define isalpha(c) (islower(c) || isupper(c))
+# define isalnum(c)  (isalpha(c) || isnum(c))
+
 Token	Parser::parse_word(const char c)
 {
   this->identifier.push_back(c);
@@ -166,7 +176,7 @@ Token	Parser::parse_word(const char c)
     {
       const char	c2(this->peek_char());
 
-      if ((c2 >= 'a' && c2 <= 'z') || (c2 >= 'A' && c2 <= 'Z') || c2 == '_' || (c2 >= '0' && c2 <= '9'))
+      if (isalnum(c2) || c2 == '_')
 	{
 	  this->identifier.push_back(c2);
 	  this->advance_char();
@@ -186,7 +196,8 @@ bool	Parser::skip_cpp_comment(void)
 	return true;
       else if (this->eof_p())
 	{
-	  Message::error(this->options.error_stream, "c++ style comment should be finished by a new-line\n");
+	  Message::error(this->options.error_stream,
+			 "c++ style comment should be finished by a new-line\n");
 	  return false;
 	}
     }
@@ -244,12 +255,14 @@ Token	Parser::advance_token_2(void)
 	  return Token::OPEN_CURLY_BRACE;
 	case '}':
 	  return Token::CLOSE_CURLY_BRACE;
-	case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g': case 'h': case 'i':
-	case 'j': case 'k': case 'l': case 'm': case 'n': case 'o': case 'p': case 'q': case 'r':
-	case 's': case 't': case 'u': case 'v': case 'w': case 'x': case 'y': case 'z':
-	case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G': case 'H': case 'I':
-	case 'J': case 'K': case 'L': case 'M': case 'N': case 'O': case 'P': case 'Q': case 'R':
-	case 'S': case 'T': case 'U': case 'V': case 'W': case 'X': case 'Y': case 'Z':
+	case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g':
+	case 'h': case 'i': case 'j': case 'k': case 'l': case 'm': case 'n':
+	case 'o': case 'p': case 'q': case 'r': case 's': case 't': case 'u':
+	case 'v': case 'w': case 'x': case 'y': case 'z':
+	case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G':
+	case 'H': case 'I': case 'J': case 'K': case 'L': case 'M': case 'N':
+	case 'O': case 'P': case 'Q': case 'R': case 'S': case 'T': case 'U':
+	case 'V': case 'W': case 'X': case 'Y': case 'Z':
 	case '_':
 	  return this->parse_word(c);
 
@@ -363,7 +376,8 @@ bool		Parser::parse_identifier(Variable &var)
     case Token::ERROR:
       return false;
     default:
-      Message::error(this->options.error_stream, "expected identifier or '('\n");
+      Message::error(this->options.error_stream,
+		     "expected identifier or '('\n");
       return false;
     }
   return true;
@@ -377,7 +391,8 @@ void	Parser::add_var_to_scope(Scope &scope, const Variable &var)
 }
 
 
-bool		Parser::parse_function_prototype(const Variable &var, Function_prototype &fun_proto)
+bool		Parser::parse_function_prototype(const Variable &var,
+						 Function_prototype &fun_proto)
 {
   fun_proto.return_type = var;
   while (this->peek_token() != Token::CLOSE_PARENT)
@@ -403,7 +418,8 @@ bool		Parser::parse_function_prototype(const Variable &var, Function_prototype &
 	    case Token::ERROR:
 	      return false;
 	    default:
-	      Message::error(this->options.error_stream, "expected identifier or ','\n");
+	      Message::error(this->options.error_stream,
+			     "expected identifier or ','\n");
 	      return false;
 	    }
 	}
@@ -437,7 +453,8 @@ bool	Parser::prioritary_operator_p(const Token &tok)
   return tok == Token::STAR || tok == Token::DIVISION;
 }
 
-bool	Parser::handle_operation(Scope &scope, std::array<std::string, 3> &name, std::array<Token, 2> &op)
+bool	Parser::handle_operation(Scope &scope, std::array<std::string, 3> &name,
+				 std::array<Token, 2> &op)
 {
   if (name[0].empty())
     mj_unreachable();
@@ -450,7 +467,8 @@ bool	Parser::handle_operation(Scope &scope, std::array<std::string, 3> &name, st
       expr.unop.expr = get_var_with_name(*this->scope_, name[0]);
       if (!expr.unop.expr)
 	{
-	  Message::error(this->options.error_stream, "could not find the var %s\n", name[0].c_str());
+	  Message::error(this->options.error_stream,
+			 "could not find the var %s\n", name[0].c_str());
 	  return false;
 	}
       scope.expr.push_back(expr);
@@ -486,18 +504,24 @@ bool	Parser::handle_operation(Scope &scope, std::array<std::string, 3> &name, st
 	  mj_unreachable();
 	}
       expr.binop.left = get_var_with_name(*this->scope_, name[idx_operator]);
-      expr.binop.right = get_var_with_name(*this->scope_, name[idx_operator + 1]);
+      expr.binop.right = get_var_with_name(*this->scope_,
+					   name[idx_operator + 1u]);
       if (!expr.binop.left)
 	{
-	  Message::error(this->options.error_stream, "could not find the var %s\n", name[idx_operator].c_str());
+	  Message::error(this->options.error_stream,
+			 "could not find the var %s\n",
+			 name[idx_operator].c_str());
 	  return false;
 	}
       if (!expr.binop.right)
 	{
-	  Message::error(this->options.error_stream, "could not find the var %s\n", name[idx_operator + 1].c_str());
+	  Message::error(this->options.error_stream,
+			 "could not find the var %s\n",
+			 name[idx_operator + 1u].c_str());
 	  return false;
 	}
-      expr.binop.result = create_temp_var(scope, expr.binop.left, temp_id_creator().new_temp("."));
+      expr.binop.result = create_temp_var(scope, expr.binop.left,
+					  temp_id_creator().new_temp("."));
       scope.expr.push_back(expr);
       if (idx_operator == 0)
 	{
@@ -532,7 +556,8 @@ bool	Parser::parse_expression(Scope &scope)
 	mj_unreachable();
       switch (this->advance_token())
 	{
-	case Token::PLUS: case Token::MINUS: case Token::STAR: case Token::DIVISION:
+	case Token::PLUS: case Token::MINUS:
+	case Token::STAR: case Token::DIVISION:
 	  if (operations[0] == Token::EOF_)
 	    operations[0] = this->peek_token();
 	  else if (operations[1] == Token::EOF_)
@@ -557,13 +582,15 @@ bool	Parser::parse_expression(Scope &scope)
 	  return false;
 	default:
 	  {
-	    Message::error(this->options.error_stream, "expected operator or ';'\n");
+	    Message::error(this->options.error_stream,
+			   "expected operator or ';'\n");
 	    return false;
 	  }
 	}
       if (this->advance_token() != Token::WORD)
 	{
-	  Message::error(this->options.error_stream, "expected identifier or constant\n");
+	  Message::error(this->options.error_stream,
+			 "expected identifier or constant\n");
 	  return false;
 	}
     }
@@ -586,7 +613,8 @@ bool	Parser::parse_scope(Scope &scope)
 	  {
 	    if (!this->scope_level)
 	      {
-		Message::error(this->options.error_stream, "expected identifier\n");
+		Message::error(this->options.error_stream,
+			       "expected identifier\n");
 		goto error;
 	      }
 	    else
@@ -655,7 +683,8 @@ bool	Parser::parse_scope(Scope &scope)
 		  }
 		default:
 		  if (var.name.empty())
-		    Message::error(this->options.error_stream, "expected identifier or '('\n");
+		    Message::error(this->options.error_stream,
+				   "expected identifier or '('\n");
 		  else
 		    Message::error(this->options.error_stream, "expected ';' or '('\n");
 		  goto error;
@@ -673,7 +702,8 @@ bool	Parser::parse_scope(Scope &scope)
 	case Token::ERROR:
 	  return false;
 	default:
-	  Message::error(this->options.error_stream, "expected declaration or identifier\n");
+	  Message::error(this->options.error_stream,
+			 "expected declaration or identifier\n");
 	  goto error;
 	}
     }

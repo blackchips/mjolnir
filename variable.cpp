@@ -27,7 +27,8 @@ Variable	*get_var_with_name(Scope &scope, const std::string &name)
   return nullptr;
 }
 
-Variable	*create_temp_var(Scope &scope, const Variable *var, const std::string &name)
+Variable	*create_temp_var(Scope &scope, const Variable *var,
+				 const std::string &name)
 {
   Variable	*temp = new Variable(var);
 

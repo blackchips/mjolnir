@@ -7,10 +7,14 @@ class File final
   const size_t	length_;
 
  public:
-  explicit inline File(const char *name_, const char *content_, const size_t &length__) :
-    name(name_), content(content_), length_(length__){}
+  explicit inline File(const char *name_, const char *content_,
+		       const size_t &length__) :
+    name(name_), content(content_), length_(length__)
+  { }
   explicit inline File(const File &file_) :
-    name(file_.name), content(file_.content), length_(file_.length()){}
+    name(file_.name), content(file_.content), length_(file_.length())
+    { }
+
   size_t		length(void) const
   {
     return this->length_;
@@ -24,9 +28,16 @@ class File final
 
 
 struct Variable final {
-  explicit inline Variable(void) : size(0), name(""){}
-  explicit inline Variable(const Variable *other) : size(other->size), name(other->name){}
-  inline Variable(const Variable &other) : size(other.size), name(other.name){}
+  explicit inline Variable(void) : size(0), name("")
+    { }
+  explicit inline Variable(const Variable *other) :
+    size(other->size), name(other->name)
+    { }
+  inline Variable(const Variable &other) :
+    size(other.size), name(other.name)
+    { }
+
+
   unsigned long long		size;
   std::string	name;
 };

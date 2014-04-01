@@ -14,7 +14,11 @@ enum C_dialect {
 
 struct Option
 {
-  inline explicit Option(void) : error_stream(""), dump_stream(""), parse_p(true), dump_parse_p(false), c_dialect(C_99) {}
+  inline explicit Option(void) :
+  error_stream(""), dump_stream(""), parse_p(true), dump_parse_p(false),
+  c_dialect(C_99)
+  { }
+
   std::string	error_stream;
   std::string	dump_stream;
   bool		parse_p;

@@ -7,9 +7,12 @@
 #include "dumper.hh"
 
 static void	dump_type(std::string &stream, const Variable *var);
-static void	dump_variable(std::string &stream, const Variable *var, bool tab_p);
-static void	dump_function_prototype(std::string &stream, const Function_prototype &proto);
-static void	dump_scope(std::string &stream, const Scope *scope, unsigned int level);
+static void	dump_variable(std::string &stream, const Variable *var,
+			      bool tab_p);
+static void	dump_function_prototype(std::string &stream,
+					const Function_prototype &proto);
+static void	dump_scope(std::string &stream, const Scope *scope,
+			   unsigned int level);
 static void	dump_expression(std::string &stream, const Expression &expr);
 static const char	*get_string_for_operator(Expression::Kind ope);
 
@@ -25,7 +28,8 @@ static void	dump_type(std::string &stream, const Variable *var)
     }
 }
 
-static void	dump_variable(std::string &stream, const Variable *var, bool tab_p)
+static void	dump_variable(std::string &stream, const Variable *var,
+			      bool tab_p)
 {
   dump_type(stream, var);
   if (!var->name.empty())
@@ -35,7 +39,8 @@ static void	dump_variable(std::string &stream, const Variable *var, bool tab_p)
     }
 }
 
-static void	dump_function_prototype(std::string &stream, const Function_prototype &proto)
+static void	dump_function_prototype(std::string &stream,
+					const Function_prototype &proto)
 {
   // It's the glabal namespace
   if (proto.return_type.name == "")
@@ -52,7 +57,8 @@ static void	dump_function_prototype(std::string &stream, const Function_prototyp
 	      stream.append(", ");
 	    }
 	  if (!proto.params.empty())
-	    dump_variable(stream, &proto.params[proto.params.size() - 1], false /*tab_p*/);
+	    dump_variable(stream, &proto.params[proto.params.size() - 1],
+			  false /*tab_p*/);
 	}
       stream.append(")");
     }
@@ -96,7 +102,8 @@ static void	dump_expression(std::string &stream, const Expression &expr)
 }
 
 
-static void	dump_scope(std::string &stream, const Scope *scope, unsigned int level)
+static void	dump_scope(std::string &stream, const Scope *scope,
+			   unsigned int level)
 {
   dump_function_prototype(stream, scope->proto);
   if (level == 1)
@@ -117,8 +124,11 @@ static void	dump_scope(std::string &stream, const Scope *scope, unsigned int lev
     {
       dump_scope(stream, &function, level + 1);
     }
-  if ((!scope->var.empty() || !scope->function_prototypes.empty()) && !scope->expr.empty())
-    stream.append("\n");
+  if ((!scope->var.empty() || !scope->function_prototypes.empty()) &&
+      !scope->expr.empty())
+    {
+      stream.append("\n");
+    }
   for (auto expr : scope->expr)
     {
       dump_expression(stream, expr);
