@@ -5,3 +5,5 @@
 *.gcov
 *.o
 *.d
+*.~
+mjolnir
