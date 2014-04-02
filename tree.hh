@@ -2,6 +2,10 @@
 # define	TREE_HH_
 
 
+/*
+** This struct is for storing the maximum amount of datas
+** about Variables
+*/
 struct Variable final {
   explicit inline Variable(void) : size(0), name("")
     { }
@@ -12,30 +16,43 @@ struct Variable final {
     size(other.size), name(other.name)
     { }
 
-
-  unsigned long long		size;
-  std::string	name;
+  /* The size in bits taken by the variable */
+  unsigned long long	size;
+  /*name of the variable*/
+  std::string		name;
 };
 
 
-
+/*
+** Store a function prototype
+** For the return type, the name of the variable is the name of the function
+*/
 struct Function_prototype final {
   explicit Function_prototype(void) : return_type(), params()
     { }
 
+  /*Return type and name of the function*/
   Variable		return_type;
+  /*List of all the function params from the left to the right*/
   std::vector<Variable>	params;
 };
 
 
+/*
+** Operation with two operands, for exemple:
+** result = left + right;
+*/
 struct Binop {
+  /*Left operand*/
   Variable	*left;
+  /*right operand*/
   Variable	*right;
+  /*result of the operation*/
   Variable	*result;
 };
 
-struct Unop {
 
+struct Unop {
   Variable	*result;
   Variable	*expr;
 };
@@ -54,6 +71,8 @@ struct Expression final {
     Binop		binop;
   };
 };
+
+
 
 struct Scope final
 {

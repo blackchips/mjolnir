@@ -9,7 +9,7 @@
 #include "message.hh"
 #include "variable.hh"
 #include "lexer.hh"
-
+#include "temp_factory.hh"
 
 
 class Parser final
@@ -20,7 +20,7 @@ public:
     lexer_(file, options)
   { }
   Parser(void) = delete;
-  void	operator=(const Parser &) = delete;
+  Parser	&operator=(const Parser &) = delete;
   Parser(const Parser &parser) = delete;
 public:
   Scope			*parse(void);
@@ -232,7 +232,7 @@ bool	Parser::handle_operation(Scope &scope, std::array<std::string, 3> &name,
 	  return false;
 	}
       expr.binop.result = create_temp_var(scope, expr.binop.left,
-					  temp_id_creator().new_temp("."));
+					  temp_factory().new_temp("."));
       scope.expr.push_back(expr);
       if (idx_operator == 0)
 	{

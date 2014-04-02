@@ -6,9 +6,8 @@
 #include "variable.hh"
 
 
-Variable	*get_var_with_name(Scope &scope, const std::string &name)
+Variable	*get_var_with_name(const Scope &scope, const std::string &name)
 {
-
   if (!scope.functions.empty())
     {
       Variable	*tmp = get_var_with_name(scope.functions.back(), name);
@@ -16,12 +15,10 @@ Variable	*get_var_with_name(Scope &scope, const std::string &name)
       if (tmp)
 	return tmp;
     }
-  for (std::size_t i = 0; i < scope.var.size(); i++)
+  for (size_t i = 0; i < scope.var.size(); i++)
     {
       if (name == scope.var[i]->name)
-	{
-	  return scope.var.data()[i];
-	}
+	return scope.var.data()[i];
     }
   return nullptr;
 }
@@ -33,7 +30,8 @@ Variable	*create_temp_var(Scope &scope, const Variable *var,
 
   temp->name.assign(name);
   scope.var.emplace_back(temp);
-  return scope.var.data()[scope.var.size() - 1];
+  return temp;
+  //scope.var.data()[scope.var.size() - 1];
 }
 
 

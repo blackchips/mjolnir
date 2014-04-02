@@ -1,45 +1,62 @@
 #ifndef		MJOLNIR_HH_
 # define	MJOLNIR_HH_
 
+/*
+ * Define for some attributes
+ *
+ * TODO: add some guards to see if the compiler support them
+ */
 #  define UNUSED		__attribute__((unused))
-#  define USED			__attribute__((used))
 #  define NORETURN		__attribute__((noreturn))
-
-#  define ABORT()		__builtin_abort()
 #  define PRINTF(...)		__attribute__((format(printf, __VA_ARGS__)))
 
-#  ifdef NULL
-#   undef NULL
-#  endif // NULL
 
+/*
+** Define some common builtins
+*/
+#  define UNREACHABLE()		__builtin_unreachable()
 
-#include <stddef.h>
-
-
-
+/*
+** definition of a macro for unreachable who calls a function
+** If it is made as a macro we have to use {} to gard between ifs
+** If it is made as a function __FUNCTION__ won't be set properly
+*/
 static inline void	mj_unreachable_fun(const char *f) NORETURN;
+
+static inline void	mj_unreachable_fun(const char *fun_name)
+{
+  __builtin_printf("unreachable path %s: %s %d\n",
+		   __FILE__, fun_name, __LINE__);
+  UNREACHABLE();
+}
+
+# define	mj_unreachable() mj_unreachable_fun(__FUNCTION__)
+
+
+
+
+/*
+** definition of a macro for assert who calls a function
+** If it is made as a macro we have to use {} to gard between ifs
+** If it is made as a function __FUNCTION__ won't be set properly
+*/
 static inline void	mj_assert_fun(const bool cond, const char *fun_name);
-
-#  define	mj_assert(expr) mj_assert_fun(expr, __FUNCTION__)
-
 
 static inline void	mj_assert_fun(const bool cond, const char *fun_name)
 {
   if (cond)
     return ;
   __builtin_printf("assert fail %s: %s %d\n", __FILE__, fun_name, __LINE__);
-  ABORT();
+  UNREACHABLE();
 }
 
-static inline void	mj_unreachable_fun(const char *fun_name)
-{
-  __builtin_printf("unreachable path %s: %s %d\n",
-		   __FILE__, fun_name, __LINE__);
-  ABORT();
-}
+#  define	mj_assert(expr) mj_assert_fun(expr, __FUNCTION__)
 
-# define	mj_unreachable() mj_unreachable_fun(__FUNCTION__)
 
+
+/*
+** define somme usefull macro for the targeted host
+*/
 
 # define SIZEOF_VOID	1
 # define SIZEOF_INT	4
@@ -47,34 +64,11 @@ static inline void	mj_unreachable_fun(const char *fun_name)
 
 
 
-class TempId
-{
-public:
-  explicit inline TempId(void) : counter(0) {}
-
-  inline const std::string	new_temp(void)
-  {
-    return std::to_string(this->counter++);
-  }
-
-  inline const std::string	new_temp(const std::string &begin)
-  {
-    return begin + std::to_string(this->counter++);
-  }
-  inline void		reset(void)
-  {
-    this->counter = 0;
-  }
-private:
-  unsigned long long		counter;
-};
-
-inline TempId	&temp_id_creator(void)
-{
-  static TempId	a;
-  return a;
-}
 
 
+/*
+  Include to have the correct definition of size_t
+ */
+#include <stddef.h>
 
 #endif		// !MJOLNIR_HH_

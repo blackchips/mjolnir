@@ -312,6 +312,7 @@ static void	do_tests(void)
   test_parse_operator_priority();
 }
 
+
 int	main(void)
 {
   do_tests();
