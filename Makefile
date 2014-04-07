@@ -1,35 +1,25 @@
-SRC= $(wildcard ./*.cpp)
-OBJ= $(SRC:.cpp=.o)
+SRC= $(wildcard ./*.c)
+OBJ= $(SRC:.c=.o)
 INC= $(PWD)
 NAME=mjolnir
-TESTNAME=test
-CXX=@g++
+CXX=@gcc
 RM=@rm -f
 ECHO=@echo
 
 
-CXXFLAGS=-O0 -pipe -g3 -Werror -MMD -pedantic -ansi -std=c++11 -Wall -Wextra \
--fno-builtin -Wstrict-overflow=5 -Wsign-conversion -Wshadow -Wuseless-cast \
--Wzero-as-null-pointer-constant -Wpadded -Wsign-conversion -Wsign-promo \
--Weffc++
+CXXFLAGS=-O0 -pipe -g3 -Werror -MMD -pedantic -ansi -Wall -Wextra \
+-fno-builtin -Wstrict-overflow=5 -Wsign-conversion -Wshadow \
+-Wpadded -Wsign-conversion
 
-TESTDIR=./tests/
 
-TESTSRC=$(wildcard $(TESTDIR)*.cpp)
-TESTOBJ=$(TESTSRC:.cpp=.o)
 
 $(NAME): $(OBJ)
 	$(ECHO) Creating $(NAME)
 	$(CXX) $(OBJ) -o $(NAME) $(CXXFLAGS)
 
-all: $(NAME) $(TESTNAME)
+all: $(NAME)
 
-$(TESTNAME): $(OBJ) $(TESTOBJ)
-	$(ECHO) Creating $(TESTNAME)
-	$(CXX) $(OBJ) $(TESTOBJ) -o $(TESTNAME) $(CXXFLAGS)
-
-
-.cpp.o: %.cpp
+.c.o: %.c
 	$(ECHO) Compilling $<
 	$(CXX) -c -o $@ $< $(CXXFLAGS) $(foreach dir, $(INC), -I $(dir))
 
@@ -45,8 +35,8 @@ fclean: clean
 	$(RM) $(OBJ) main.o
 	$(RM) $(TESTOBJ)
 	$(ECHO) deleting dependencies files
-	$(RM) $(SRC:.cpp=.d) main.d
-	$(RM) $(TESTSRC:.cpp=.d)
+	$(RM) $(SRC:.c=.d) main.d
+	$(RM) $(TESTSRC:.c=.d)
 	$(ECHO) deleting executables
 	$(RM) $(TESTNAME)
 	$(RM) $(NAME)
@@ -57,5 +47,4 @@ check:
 	valgrind ../cppcheck/cppcheck  --verbose --enable=all --inconclusive $(SRC)
 
 
--include $(SRC:.cpp=.d) main.d
--include $(TESTSRC:.cpp=.d)
+-include $(SRC:.c=.d)
